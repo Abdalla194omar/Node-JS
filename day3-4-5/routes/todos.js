@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { auth } = require("../middlewares/auth");
+const { auth, restrictTo } = require("../middlewares/auth");
 const {
   deleteTodo,
   updateTodo,
@@ -8,12 +8,12 @@ const {
   getTodoById,
   getAllTodos,
 } = require("../controllers/todos");
-router.use(auth);
-router.get("/", getAllTodos);
 
-router.get("/:id", getTodoById);
+router.get("/", auth, restrictTo("admin", "user"), getAllTodos);
 
-router.post("/", addNewTodo);
+router.get("/:id", auth, restrictTo("admin"), getTodoById);
+
+router.post("/", auth, addNewTodo);
 
 router.patch("/:id", updateTodo);
 
